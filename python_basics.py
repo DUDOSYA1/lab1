@@ -128,7 +128,42 @@ if notPassedTest(mse(VectorPairInput(predicted=[-1, -2], expected=[1, 2])), 10.0
 
 def prime_factorization(data: PositiveIntegerInput) -> str:
     number = data.value
-    raise NotImplementedError  # TODO
+    if number == 1:
+        return "(1)"
+
+    result = ""
+    divisor = 2
+
+    while number > 1:
+        if number % divisor == 0:
+            degree = 0
+            while number % divisor == 0:
+                degree += 1
+                number //= divisor
+
+            if degree == 1:
+                result += f"({divisor})"
+            else:
+                result += f"({divisor}**{degree})"
+
+        divisor += 1
+
+        if divisor * divisor > number and number > 1:
+            result += f"({number})"
+            break
+
+    return result
+
+
+# tests
+if notPassedTest(prime_factorization(PositiveIntegerInput(86240)), "(2**5)(5)(7**2)(11)"):
+    print("1.6 test 1 error")
+if notPassedTest(prime_factorization(PositiveIntegerInput(13)), "(13)"):
+    print("1.6 test 2 error")
+if notPassedTest(prime_factorization(PositiveIntegerInput(9)), "(3**2)"):
+    print("1.6 test 3 error")
+if notPassedTest(prime_factorization(PositiveIntegerInput(1)), "(1)"):
+    print("1.6 test 4 error")
 
 
 def pyramid(data: PositiveIntegerInput) -> int | str:
