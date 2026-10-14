@@ -104,7 +104,26 @@ if notPassedTest(multiplicative_persistence(PositiveIntegerInput(25)), 2):
 
 def mse(data: VectorPairInput) -> float:
     predicted, expected = data.predicted, data.expected
-    raise NotImplementedError  # TODO
+    n = len(predicted)
+    if n == 0:
+        return 0.0
+
+    sum = 0
+    for i in range(n):
+        sum += (predicted[i] - expected[i]) ** 2
+
+    return sum / n
+
+
+# tests
+if notPassedTest(mse(VectorPairInput(predicted=[1, 2, 3], expected=[1, 2, 3])), 0.0):
+    print("1.5 test 1 error")
+if notPassedTest(mse(VectorPairInput(predicted=[2, 3, 4], expected=[1, 2, 3])), 1.0):
+    print("1.5 test 2 error")
+if notPassedTest(mse(VectorPairInput(predicted=[0, 2], expected=[3, 0])), 6.5):
+    print("1.5 test 3 error")
+if notPassedTest(mse(VectorPairInput(predicted=[-1, -2], expected=[1, 2])), 10.0):
+    print("1.5 test 4 error")
 
 
 def prime_factorization(data: PositiveIntegerInput) -> str:
