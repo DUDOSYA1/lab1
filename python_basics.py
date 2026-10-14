@@ -2,10 +2,31 @@
 
 from grader_contracts.python_basics import PositiveIntegerInput, TextInput, VectorPairInput
 
+def isPassedTest(functionOutput, expectedOutput) -> bool:
+    if(functionOutput == expectedOutput):
+        return True
+    else:
+        return False
 
 def count_vowels(data: TextInput) -> int:
-    text = data.value
-    raise NotImplementedError  # TODO
+    if data.value is None:
+        return 0
+    text = data.value.lower()
+    counter = 0
+    for i in range(len(text)):
+        if text[i] in 'aeiou':
+            counter+=1
+        else:
+            continue
+    return counter
+
+#tests
+if not( isPassedTest(count_vowels(TextInput('')),0)):
+    print("1.1 test 1 error")
+if not(isPassedTest(count_vowels(TextInput('AAAaaa')), 6)):
+    print("1.1 test 2 error")
+if not(isPassedTest(count_vowels(TextInput('one phrase')), 4)):
+    print("1.1 test 2 error")
 
 
 def has_unique_characters(data: TextInput) -> bool:
