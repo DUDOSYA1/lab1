@@ -76,7 +76,30 @@ if notPassedTest(count_one_bits(PositiveIntegerInput(42)), 3):
 
 def multiplicative_persistence(data: PositiveIntegerInput) -> int:
     number = data.value
-    raise NotImplementedError  # TODO
+    steps = 0
+
+    while number >= 10:
+        product = 1
+        current = number
+        while current > 0:
+            product *= current % 10
+            current //= 10
+
+        number = product
+        steps += 1
+
+    return steps
+
+
+# tests
+if notPassedTest(multiplicative_persistence(PositiveIntegerInput(4)), 0):
+    print("1.4 test 1 error")
+if notPassedTest(multiplicative_persistence(PositiveIntegerInput(39)), 3):
+    print("1.4 test 2 error")
+if notPassedTest(multiplicative_persistence(PositiveIntegerInput(999)), 4):
+    print("1.4 test 3 error")
+if notPassedTest(multiplicative_persistence(PositiveIntegerInput(25)), 2):
+    print("1.4 test 4 error")
 
 
 def mse(data: VectorPairInput) -> float:
