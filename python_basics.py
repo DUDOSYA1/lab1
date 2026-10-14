@@ -168,7 +168,29 @@ if notPassedTest(prime_factorization(PositiveIntegerInput(1)), "(1)"):
 
 def pyramid(data: PositiveIntegerInput) -> int | str:
     cube_count = data.value
-    raise NotImplementedError  # TODO
+    sum = 0
+    k = 1
+
+    while sum < cube_count:
+        sum += k ** 2
+        if sum == cube_count:
+            return k
+        k += 1
+
+    return "It is impossible"
+
+
+# tests
+if notPassedTest(pyramid(PositiveIntegerInput(1)), 1):
+    print("1.7 test 1 error")
+if notPassedTest(pyramid(PositiveIntegerInput(5)), 2):
+    print("1.7 test 2 error")
+if notPassedTest(pyramid(PositiveIntegerInput(14)), 3):
+    print("1.7 test 3 error")
+if notPassedTest(pyramid(PositiveIntegerInput(4)), "It is impossible"):
+    print("1.7 test 4 error")
+if notPassedTest(pyramid(PositiveIntegerInput(100)), "It is impossible"):
+    print("1.7 test 5 error")
 
 
 def is_balanced_number(data: PositiveIntegerInput) -> bool:
