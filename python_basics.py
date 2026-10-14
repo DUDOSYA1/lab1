@@ -56,8 +56,23 @@ if notPassedTest(has_unique_characters(TextInput('a b c ')), False):
 
 def count_one_bits(data: PositiveIntegerInput) -> int:
     number = data.value
-    raise NotImplementedError  # TODO
+    bits = []
+    while (number > 0):
+        bits.append(number % 2)
+        number = number // 2
+    return bits.count(1)
 
+#tests
+if notPassedTest(count_one_bits(PositiveIntegerInput(0)), 0):
+    print("1.3 test 1 error")
+if notPassedTest(count_one_bits(PositiveIntegerInput(1)), 1):
+    print("1.3 test 2 error")
+if notPassedTest(count_one_bits(PositiveIntegerInput(16)), 1):
+    print("1.3 test 3 error")
+if notPassedTest(count_one_bits(PositiveIntegerInput(15)), 4):
+    print("1.3 test 4 error")
+if notPassedTest(count_one_bits(PositiveIntegerInput(42)), 3):
+    print("1.3 test 5 error")
 
 def multiplicative_persistence(data: PositiveIntegerInput) -> int:
     number = data.value
