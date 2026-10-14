@@ -195,4 +195,28 @@ if notPassedTest(pyramid(PositiveIntegerInput(100)), "It is impossible"):
 
 def is_balanced_number(data: PositiveIntegerInput) -> bool:
     number = data.value
-    raise NotImplementedError  # TODO
+    s = str(number)
+    mid = len(s) // 2
+
+    left = 0
+    right = 0
+
+    for i in range(mid):
+        left += int(s[i])
+
+    for i in range(len(s) - mid, len(s)):
+        right += int(s[i])
+
+    return left == right
+
+# tests
+if notPassedTest(is_balanced_number(PositiveIntegerInput(1234006)), True):
+    print("1.8 test 1 error")
+if notPassedTest(is_balanced_number(PositiveIntegerInput(123456)), False):
+    print("1.8 test 2 error")
+if notPassedTest(is_balanced_number(PositiveIntegerInput(1)), True):
+    print("1.8 test 3 error")
+if notPassedTest(is_balanced_number(PositiveIntegerInput(11)), True):
+    print("1.8 test 4 error")
+if notPassedTest(is_balanced_number(PositiveIntegerInput(50905)), True):
+    print("1.8 test 5 error")
