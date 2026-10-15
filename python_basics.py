@@ -194,20 +194,17 @@ if notPassedTest(pyramid(PositiveIntegerInput(100)), "It is impossible"):
 
 
 def is_balanced_number(data: PositiveIntegerInput) -> bool:
-    number = data.value
-    s = str(number)
+    s = str(data.value)
     mid = len(s) // 2
 
-    left = 0
-    right = 0
+    if len(s) % 2 == 1:
+        left = s[:mid]
+        right = s[mid + 1:]
+    else:
+        left = s[:mid - 1]
+        right = s[mid + 1:]
 
-    for i in range(mid):
-        left += int(s[i])
-
-    for i in range(len(s) - mid, len(s)):
-        right += int(s[i])
-
-    return left == right
+    return sum(map(int, left)) == sum(map(int, right))
 
 # tests
 if notPassedTest(is_balanced_number(PositiveIntegerInput(1234006)), True):
