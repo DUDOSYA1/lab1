@@ -305,7 +305,60 @@ if notPassedTest(test_image, np.full((2, 3, 3), 8)):
 
 def analyze_time_series(data: TimeSeriesInput) -> TimeSeriesStatistics:
     values, window = data.values, data.window
-    raise NotImplementedError  # TODO
+    values = np.asarray(values,dtype=float)
+    n = len(values)
+
+    if n == 0:
+        return TimeSeriesStatistics(mean=0.0, variance=0.0, std=0.0,
+            local_maxima_indices=[], local_minima_indices=[], moving_average=np.array([]))
+
+    maxi = []
+    mini = []
+    for i in range(1, n - 1):
+        if values[i] > values[i- 1] and values[i] > values[i + 1]:
+            maxi.append(i)
+        if values[i] < values[i - 1] and values[i]< values[i + 1]:
+            mini.append(i)
+
+    if window < 1 or window > n:
+        moving_average = np.array([])
+    else:
+        moving_average = np.lib.stride_tricks.sliding_window_view(values, window).mean(axis=1)
+
+    return TimeSeriesStatistics(
+        mean=float(values.mean()),
+        variance=float(values.var()),
+        std=float(values.std()),
+        local_maxima_indices= maxi,
+        local_minima_indices=mini,
+        moving_average=moving_average
+    )
+
+
+# tests
+test_result = analyze_time_series(TimeSeriesInput(values=[1, 3, 2, 4, 1], window=2))
+if (notPassedTest(test_result.local_maxima_indices, [1, 3])
+        or notPassedTest(test_result.local_minima_indices, [2])):
+    print("2.7 test 1 error")
+if notPassedTest(test_result.moving_average, [2, 2.5, 3, 2.5]):
+    print("2.7 test 2 error")
+if (notPassedTest(test_result.mean, 2.2)
+        or notPassedTest(test_result.std ** 2, test_result.variance)):
+    print("2.7 test 3 error")
+
+test_result = analyze_time_series(TimeSeriesInput(values=[1, 2, 2, 1], window=1))
+if (notPassedTest(test_result.local_maxima_indices, []) or
+        notPassedTest(test_result.local_minima_indices, [])):
+    print("2.7 test 4 error")
+
+test_result = analyze_time_series(TimeSeriesInput(values=[5], window=1))
+if (notPassedTest(test_result.variance, 0.0) or
+        notPassedTest(test_result.moving_average, [5])):
+    print("2.7 test 5 error")
+
+test_result = analyze_time_series(TimeSeriesInput(values=[2, 4, 6], window=3))
+if notPassedTest(test_result.moving_average, [4]):
+    print("2.7 test 6 error")
 
 
 def one_hot(data: OneHotInput) -> np.ndarray:
