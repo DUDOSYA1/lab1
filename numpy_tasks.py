@@ -362,5 +362,29 @@ if notPassedTest(test_result.moving_average, [4]):
 
 
 def one_hot(data: OneHotInput) -> np.ndarray:
-    labels, class_count = data.labels, data.class_count
-    raise NotImplementedError  # TODO
+    labels = np.array(data.labels)
+    class_count = data.class_count
+
+    if class_count is None:
+        class_count = labels.max() + 1
+
+    matrix = np.zeros((len(labels), class_count))
+    for i in range(len(labels)):
+        matrix[i, labels[i]] = 1
+
+    return matrix
+
+
+# tests
+if notPassedTest(one_hot(OneHotInput(labels=[0, 2, 3, 0])),
+                 [[1, 0, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1], [1, 0, 0, 0]]):
+    print("2.8 test 1 error")
+if notPassedTest(one_hot(OneHotInput(labels=[0, 1], class_count=4)),
+                 [[1, 0, 0, 0], [0, 1, 0, 0]]):
+    print("2.8 test 2 error")
+if notPassedTest(one_hot(OneHotInput(labels=[0])), [[1]]):
+    print("2.8 test 3 error")
+if notPassedTest(one_hot(OneHotInput(labels=[], class_count=3)), np.zeros((0, 3))):
+    print("2.8 test 4 error")
+if notPassedTest(one_hot(OneHotInput(labels=[2, 2, 2])), [[0, 0, 1]] * 3):
+    print("2.8 test 5 error")
