@@ -196,26 +196,111 @@ if (notPassedTest(test_stat_4.column_variances, [0.0])
     print("2.4 test 5 error")
 
 #test histigram
-histogram(test_stat)
+#histogram(test_stat)
 
 
 def chess(data: ChessInput) -> np.ndarray:
     rows, columns, first, second = data.rows, data.columns, data.first, data.second
-    raise NotImplementedError  # TODO
+    i, j = np.indices((rows, columns))
+
+    return np.where((i + j) % 2 == 0, first, second)
+
+
+# tests
+if notPassedTest(chess(ChessInput(
+        rows=3, columns=4, first=0, second=1)),
+        [[0, 1, 0, 1], [1, 0, 1, 0], [0, 1, 0, 1]]):
+    print("2.5 test 1 error")
+if notPassedTest(chess(ChessInput(
+        rows=1, columns=1, first=7, second=9)),
+        [[7]]):
+    print("2.5 test 2 error")
+if notPassedTest(chess(ChessInput(
+        rows=1, columns=4, first=1, second=2)),
+        [[1, 2, 1, 2]]):
+    print("2.5 test 3 error")
+if notPassedTest(chess(ChessInput(
+        rows=3, columns=1, first=1, second=2)),
+        [[1], [2], [1]]):
+    print("2.5 test 4 error")
+if notPassedTest(chess(ChessInput(
+        rows=2, columns=2, first=5, second=5)),
+                 [[5, 5], [5, 5]]):
+    print("2.5 test 5 error")
 
 
 def draw_rectangle(data: RectangleInput) -> np.ndarray:
     width, height = data.width, data.height
     image_height, image_width = data.image_height, data.image_width
     shape_color, background_color = data.shape_color, data.background_color
-    raise NotImplementedError  # TODO
 
+    image = np.zeros((image_height, image_width, 3), dtype=np.uint8)
+    image[:, :] = background_color
+
+    top = max((image_height - height) // 2, 0)
+    left = max((image_width - width) // 2, 0)
+    bottom = min(top + height, image_height)
+    right = min(left + width, image_width)
+
+    image[top:bottom, left:right] = shape_color
+    return image
 
 def draw_ellipse(data: EllipseInput) -> np.ndarray:
     semi_axis_x, semi_axis_y = data.semi_axis_x, data.semi_axis_y
     image_height, image_width = data.image_height, data.image_width
     shape_color, background_color = data.shape_color, data.background_color
-    raise NotImplementedError  # TODO
+
+    image = np.zeros((image_height, image_width, 3), dtype=np.uint8)
+    image[:, :] = background_color
+
+    if semi_axis_x <= 0 or semi_axis_y <= 0:
+        return image
+
+    x0 = (image_width - 1) / 2
+    y0 = (image_height - 1) / 2
+    y, x = np.indices((image_height, image_width))
+
+    inside = (x - x0) ** 2 / semi_axis_x ** 2 + (y - y0) ** 2 / semi_axis_y ** 2 <= 1
+    image[inside] = shape_color
+    return image
+
+# tests
+test_image = draw_rectangle(RectangleInput(width=2, height=2, image_height=4, image_width=4, shape_color=(255, 0, 0), background_color=(0, 0, 0)))
+if notPassedTest(test_image.shape, (4, 4, 3)):
+    print("2.6.1 test 1 error")
+if notPassedTest(test_image[1:3, 1:3], np.full((2, 2, 3), [255, 0, 0])) or \
+        notPassedTest(test_image[0], np.zeros((4, 3))):
+    print("2.6.1 test 2 error")
+
+test_image = draw_rectangle(RectangleInput(width=10, height=10, image_height=3, image_width=5, shape_color=(1, 2, 3), background_color=(9, 9, 9)))
+if notPassedTest(test_image, np.full((3, 5, 3), [1, 2, 3])):
+    print("2.6.1 test 3 error")
+
+test_image = draw_rectangle(RectangleInput(width=0, height=0, image_height=2, image_width=2, shape_color=(1, 1, 1), background_color=(7, 7, 7)))
+if notPassedTest(test_image, np.full((2, 2, 3), 7)):
+    print("2.6.1 test 4 error")
+
+test_image = draw_rectangle(RectangleInput(width=1, height=1, image_height=1, image_width=1, shape_color=(5, 6, 7), background_color=(0, 0, 0)))
+if notPassedTest(test_image, [[[5, 6, 7]]]):
+    print("2.6.1 test 5 error")
+
+test_image = draw_ellipse(EllipseInput(semi_axis_x=2, semi_axis_y=2, image_height=5, image_width=5,  shape_color=(255, 255, 255), background_color=(0, 0, 0)))
+if notPassedTest(test_image.shape, (5, 5, 3)):
+    print("2.6.2 test 1 error")
+
+if notPassedTest(test_image[2, 2], [255, 255, 255]) or notPassedTest(test_image[0, 0], [0, 0, 0]):
+    print("2.6.2 test 2 error")
+
+if notPassedTest(test_image[2, 0], [255, 255, 255]) or notPassedTest(test_image[0, 2], [255, 255, 255]):
+    print("2.6.2 test 3 error")
+
+test_image = draw_ellipse(EllipseInput(semi_axis_x=0, semi_axis_y=3, image_height=3, image_width=3, shape_color=(1, 1, 1), background_color=(4, 4, 4)))
+if notPassedTest(test_image, np.full((3, 3, 3), 4)):
+    print("2.6.2 test 4 error")
+
+test_image = draw_ellipse(EllipseInput(semi_axis_x=100, semi_axis_y=100, image_height=2, image_width=3, shape_color=(8, 8, 8), background_color=(0, 0, 0)))
+if notPassedTest(test_image, np.full((2, 3, 3), 8)):
+    print("2.6.2 test 5 error")
 
 
 def analyze_time_series(data: TimeSeriesInput) -> TimeSeriesStatistics:
